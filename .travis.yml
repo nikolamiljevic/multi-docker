@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t nikola/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run nikola/react-test npm test -- --coverage
+
+after_success: 
+  - docker build -t nikola/multi-client ./client
+  - docker build -t nikola/multi-nginx ./nginx
+  - docker build -t nikola/multi-server ./server
+  - docker build -t nikola/multi-worker ./worker
